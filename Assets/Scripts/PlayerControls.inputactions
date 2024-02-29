@@ -42,18 +42,27 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "fire cannon",
+                    "name": "fire weapon",
                     "type": "Button",
-                    "id": "c03db8bd-5c56-466c-810c-65e33f9ef5bd",
+                    "id": "5dcf7ad4-0bdd-43da-ba84-d0485fcfcf2b",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
                 },
                 {
-                    "name": "fire missile",
+                    "name": "next weapon",
                     "type": "Button",
-                    "id": "5dcf7ad4-0bdd-43da-ba84-d0485fcfcf2b",
+                    "id": "9b01327c-1a2d-40a7-81e2-8be160693e72",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "previous weapon",
+                    "type": "Button",
+                    "id": "8b00f0b0-7689-4bb1-b5b1-4b609c9e527e",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -76,20 +85,27 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "track target",
+                    "type": "Button",
+                    "id": "4568bfad-470a-4876-b0e0-bae743e4d487",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "stop tracking target",
+                    "type": "Button",
+                    "id": "1cb3da0a-cef6-4445-983a-a9bfea70b4ac",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
-                {
-                    "name": "",
-                    "id": "866a6e47-aab6-4abb-9130-0119f58c2761",
-                    "path": "<Keyboard>/o",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard",
-                    "action": "fire cannon",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
                 {
                     "name": "",
                     "id": "7a64551b-14d2-415b-97db-b3855bb62943",
@@ -97,7 +113,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard",
-                    "action": "fire missile",
+                    "action": "fire weapon",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -254,6 +270,50 @@
                     "action": "roll",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "58dfeda7-cdd7-41f5-9562-ec6a580b50a5",
+                    "path": "<Keyboard>/l",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "track target",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0f993afa-f1e1-45d0-bdcd-dffef9b7a714",
+                    "path": "<Keyboard>/k",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "stop tracking target",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b5d4e472-69f5-40bc-a4e8-10e94a0c7b2a",
+                    "path": "<Keyboard>/rightBracket",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "next weapon",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6b71f2dc-2604-4ecd-b6d7-680c66ce3789",
+                    "path": "<Keyboard>/leftBracket",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "previous weapon",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

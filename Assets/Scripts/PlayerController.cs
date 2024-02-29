@@ -11,6 +11,10 @@ public class PlayerController : MonoBehaviour, PlayerControls.IGameplayActions
     [SerializeField]
     private Rigidbody rafaleBody;
     [SerializeField]
+    private Transform cannonTransform;
+    [SerializeField]
+    private Transform crosshairTransform;
+    [SerializeField]
     private float throttleAcceleration;
     [SerializeField]
     private float pitchFactor;
@@ -26,6 +30,10 @@ public class PlayerController : MonoBehaviour, PlayerControls.IGameplayActions
     private UnityEvent<float> updateHeightMeter;
     [SerializeField]
     private UnityEvent<Vector2, float> updateRadarCamera;
+    [SerializeField]
+    private UnityEvent trackTarget;
+    [SerializeField]
+    private UnityEvent stopTrackingTarget;
 
     private float accelerateValue;
     private float throttleInput;
@@ -40,12 +48,21 @@ public class PlayerController : MonoBehaviour, PlayerControls.IGameplayActions
     private float airbourneThresholdY;
     private float planeDrag;
     private int planeMagnitudeRounded;
+    private int sendHeightFrameCount;
+    private int sendCoordsFrameCount;
+    private int sendSpeedFrameCount;
+
 
     private const string RetractGearsAnimParamName = "RetractLandingGears";
     private const float DefaultPlaneDrag = 0.1f;
     private const float GearsDrag = 0.1f;
     private const float BrakeDrag = 1f;
-
+    private const float AngularDragDefault = 1f;
+    private const float AngularDragModifier = 0.1f;
+    private const float MinSpeedAir = 100f;
+    private const int SendHeightFramerule = 2;
+    private const int SendCoordsFramerule = 1;
+    private const int SendSpeedFramerule = 5;
 
     private void Awake()
     {
@@ -59,10 +76,13 @@ public class PlayerController : MonoBehaviour, PlayerControls.IGameplayActions
         controls.gameplay.accelerate.canceled += context => throttleInput = 0f;
         controls.gameplay.brake.performed += OnBrake;
         controls.gameplay.brake.canceled += context => brakeInput = 0f;
-        controls.gameplay.firecannon.performed += OnFirecannon;
-        controls.gameplay.firemissile.performed += OnFiremissile;
+        controls.gameplay.fireweapon.performed += OnFireweapon;
+        controls.gameplay.nextweapon.performed += OnNextweapon;
+        controls.gameplay.previousweapon.performed += OnPreviousweapon;
         controls.gameplay.togglelandinggear.performed += OnTogglelandinggear;
         controls.gameplay.toggleautospeed.performed += OnToggleautospeed;
+        controls.gameplay.tracktarget.performed += OnTracktarget;
+        controls.gameplay.stoptrackingtarget.performed += OnStoptrackingtarget;
     }
 
     // Start is called before the first frame update
@@ -76,17 +96,47 @@ public class PlayerController : MonoBehaviour, PlayerControls.IGameplayActions
         autoSpeed = 0;
         planeMagnitudeRounded = 0;
         planeDrag = DefaultPlaneDrag;
+        sendHeightFrameCount = sendCoordsFrameCount = sendSpeedFrameCount = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(!isAirbourne && transform.position.y > airbourneThresholdY)
+        if (!isAirbourne && transform.position.y > airbourneThresholdY)
         {
             isAirbourne = true;
         }
-        updateHeightMeter.Invoke(transform.position.y);
-        updateRadarCamera.Invoke(new Vector2(transform.position.x, transform.position.z), transform.rotation.eulerAngles.y);
+
+        if(sendHeightFrameCount == SendHeightFramerule)
+        {
+            sendHeightFrameCount = 0;
+            updateHeightMeter.Invoke(transform.position.y);
+        }
+        else
+        {
+            sendHeightFrameCount++;
+        }
+        
+        if(sendCoordsFrameCount == SendCoordsFramerule)
+        {
+            sendCoordsFrameCount = 0;
+            updateRadarCamera.Invoke(new Vector2(transform.position.x, transform.position.z), transform.rotation.eulerAngles.y);
+        }
+        else
+        {
+            sendCoordsFrameCount++;
+        }
+
+        if (sendSpeedFrameCount == SendSpeedFramerule)
+        {
+            sendSpeedFrameCount = 0;
+            planeMagnitudeRounded = Mathf.RoundToInt(rafaleBody.velocity.magnitude);
+            setSpeedometerSpeed.Invoke(planeMagnitudeRounded);
+        }
+        else
+        {
+            sendSpeedFrameCount++;
+        }
     }
 
     void FixedUpdate()
@@ -95,19 +145,29 @@ public class PlayerController : MonoBehaviour, PlayerControls.IGameplayActions
         if (throttleInput != 0)  // Accelerate using player input ignoring auto speed value
         {
             accelerateValue = throttleInput * throttleAcceleration;
+            rafaleBody.angularDrag += AngularDragModifier;
         }
-        else if(isAirbourne && isAutoSpeedOn) // Maintain constant speed if enabled
+        else
         {
-            accelerateValue = rafaleBody.velocity.magnitude < autoSpeed ? throttleAcceleration : 0;
+            ResetAngularDrag();
+            if (isAirbourne && isAutoSpeedOn) // Maintain constant speed if enabled
+            {
+                accelerateValue = rafaleBody.velocity.magnitude < autoSpeed ? throttleAcceleration : 0;
+            }   
         }
         
         planeDrag = DefaultPlaneDrag;
         if (brakeInput != 0)    // Brake engaged
         {
-            planeDrag += BrakeDrag * brakeInput;
+            if(rafaleBody.velocity.magnitude >= MinSpeedAir)
+            {
+                planeDrag += BrakeDrag * brakeInput;
+            }
+            rafaleBody.angularDrag += AngularDragModifier;
         }
         else
         {
+            ResetAngularDrag();
             rafaleBody.AddRelativeForce(Vector3.forward * accelerateValue, ForceMode.Acceleration);
         }
 
@@ -127,9 +187,15 @@ public class PlayerController : MonoBehaviour, PlayerControls.IGameplayActions
         {
             rafaleBody.AddRelativeTorque(rollInput * rollFactor * Vector3.forward, ForceMode.Acceleration);
         }
+        
+    }
 
-        planeMagnitudeRounded = Mathf.RoundToInt(rafaleBody.velocity.magnitude);
-        setSpeedometerSpeed.Invoke(planeMagnitudeRounded);
+    private void ResetAngularDrag()
+    {
+        if (rafaleBody.angularDrag != AngularDragDefault)
+        {
+            rafaleBody.angularDrag = AngularDragDefault;
+        }
     }
 
     private void SetAutoSpeed()
@@ -140,7 +206,6 @@ public class PlayerController : MonoBehaviour, PlayerControls.IGameplayActions
             autoSpeed = (float)planeMagnitudeRounded;
         }
     }
-
 
     // Controls section
 
@@ -173,16 +238,18 @@ public class PlayerController : MonoBehaviour, PlayerControls.IGameplayActions
         brakeInput = context.ReadValue<float>();
     }
 
-    public void OnFirecannon(InputAction.CallbackContext context)
+    public void OnFireweapon(InputAction.CallbackContext context)
     {
-        Debug.Log("Fire cannon");
+        Debug.Log("Fire weapon");
     }
-
-    public void OnFiremissile(InputAction.CallbackContext context)
+    public void OnNextweapon(InputAction.CallbackContext context)
     {
-        Debug.Log("Fire missile");
+        Debug.Log("Next weapon");
     }
-
+    public void OnPreviousweapon(InputAction.CallbackContext context)
+    {
+        Debug.Log("Previous weapon");
+    }
     public void OnTogglelandinggear(InputAction.CallbackContext context)
     {
         areGearsRetracted = !areGearsRetracted;
@@ -192,6 +259,14 @@ public class PlayerController : MonoBehaviour, PlayerControls.IGameplayActions
     {
         SetAutoSpeed();
         updateAutoSpeedIndicator.Invoke(isAutoSpeedOn, planeMagnitudeRounded);
+    }
+    public void OnTracktarget(InputAction.CallbackContext context)
+    {
+        trackTarget.Invoke();
+    }
+    public void OnStoptrackingtarget(InputAction.CallbackContext context)
+    {
+        stopTrackingTarget.Invoke();
     }
 
 }

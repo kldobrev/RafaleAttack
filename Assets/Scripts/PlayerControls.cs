@@ -64,18 +64,27 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""fire cannon"",
+                    ""name"": ""fire weapon"",
                     ""type"": ""Button"",
-                    ""id"": ""c03db8bd-5c56-466c-810c-65e33f9ef5bd"",
+                    ""id"": ""5dcf7ad4-0bdd-43da-ba84-d0485fcfcf2b"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""fire missile"",
+                    ""name"": ""next weapon"",
                     ""type"": ""Button"",
-                    ""id"": ""5dcf7ad4-0bdd-43da-ba84-d0485fcfcf2b"",
+                    ""id"": ""9b01327c-1a2d-40a7-81e2-8be160693e72"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""previous weapon"",
+                    ""type"": ""Button"",
+                    ""id"": ""8b00f0b0-7689-4bb1-b5b1-4b609c9e527e"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -98,20 +107,27 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""track target"",
+                    ""type"": ""Button"",
+                    ""id"": ""4568bfad-470a-4876-b0e0-bae743e4d487"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""stop tracking target"",
+                    ""type"": ""Button"",
+                    ""id"": ""1cb3da0a-cef6-4445-983a-a9bfea70b4ac"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
-                {
-                    ""name"": """",
-                    ""id"": ""866a6e47-aab6-4abb-9130-0119f58c2761"",
-                    ""path"": ""<Keyboard>/o"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard"",
-                    ""action"": ""fire cannon"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
                 {
                     ""name"": """",
                     ""id"": ""7a64551b-14d2-415b-97db-b3855bb62943"",
@@ -119,7 +135,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard"",
-                    ""action"": ""fire missile"",
+                    ""action"": ""fire weapon"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -276,6 +292,50 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""roll"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""58dfeda7-cdd7-41f5-9562-ec6a580b50a5"",
+                    ""path"": ""<Keyboard>/l"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""track target"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0f993afa-f1e1-45d0-bdcd-dffef9b7a714"",
+                    ""path"": ""<Keyboard>/k"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""stop tracking target"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b5d4e472-69f5-40bc-a4e8-10e94a0c7b2a"",
+                    ""path"": ""<Keyboard>/rightBracket"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""next weapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6b71f2dc-2604-4ecd-b6d7-680c66ce3789"",
+                    ""path"": ""<Keyboard>/leftBracket"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""previous weapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -300,10 +360,13 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_gameplay_brake = m_gameplay.FindAction("brake", throwIfNotFound: true);
         m_gameplay_roll = m_gameplay.FindAction("roll", throwIfNotFound: true);
         m_gameplay_turn = m_gameplay.FindAction("turn", throwIfNotFound: true);
-        m_gameplay_firecannon = m_gameplay.FindAction("fire cannon", throwIfNotFound: true);
-        m_gameplay_firemissile = m_gameplay.FindAction("fire missile", throwIfNotFound: true);
+        m_gameplay_fireweapon = m_gameplay.FindAction("fire weapon", throwIfNotFound: true);
+        m_gameplay_nextweapon = m_gameplay.FindAction("next weapon", throwIfNotFound: true);
+        m_gameplay_previousweapon = m_gameplay.FindAction("previous weapon", throwIfNotFound: true);
         m_gameplay_togglelandinggear = m_gameplay.FindAction("toggle landing gear", throwIfNotFound: true);
         m_gameplay_toggleautospeed = m_gameplay.FindAction("toggle auto speed", throwIfNotFound: true);
+        m_gameplay_tracktarget = m_gameplay.FindAction("track target", throwIfNotFound: true);
+        m_gameplay_stoptrackingtarget = m_gameplay.FindAction("stop tracking target", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -369,10 +432,13 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_gameplay_brake;
     private readonly InputAction m_gameplay_roll;
     private readonly InputAction m_gameplay_turn;
-    private readonly InputAction m_gameplay_firecannon;
-    private readonly InputAction m_gameplay_firemissile;
+    private readonly InputAction m_gameplay_fireweapon;
+    private readonly InputAction m_gameplay_nextweapon;
+    private readonly InputAction m_gameplay_previousweapon;
     private readonly InputAction m_gameplay_togglelandinggear;
     private readonly InputAction m_gameplay_toggleautospeed;
+    private readonly InputAction m_gameplay_tracktarget;
+    private readonly InputAction m_gameplay_stoptrackingtarget;
     public struct GameplayActions
     {
         private @PlayerControls m_Wrapper;
@@ -381,10 +447,13 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         public InputAction @brake => m_Wrapper.m_gameplay_brake;
         public InputAction @roll => m_Wrapper.m_gameplay_roll;
         public InputAction @turn => m_Wrapper.m_gameplay_turn;
-        public InputAction @firecannon => m_Wrapper.m_gameplay_firecannon;
-        public InputAction @firemissile => m_Wrapper.m_gameplay_firemissile;
+        public InputAction @fireweapon => m_Wrapper.m_gameplay_fireweapon;
+        public InputAction @nextweapon => m_Wrapper.m_gameplay_nextweapon;
+        public InputAction @previousweapon => m_Wrapper.m_gameplay_previousweapon;
         public InputAction @togglelandinggear => m_Wrapper.m_gameplay_togglelandinggear;
         public InputAction @toggleautospeed => m_Wrapper.m_gameplay_toggleautospeed;
+        public InputAction @tracktarget => m_Wrapper.m_gameplay_tracktarget;
+        public InputAction @stoptrackingtarget => m_Wrapper.m_gameplay_stoptrackingtarget;
         public InputActionMap Get() { return m_Wrapper.m_gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -406,18 +475,27 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @turn.started += instance.OnTurn;
             @turn.performed += instance.OnTurn;
             @turn.canceled += instance.OnTurn;
-            @firecannon.started += instance.OnFirecannon;
-            @firecannon.performed += instance.OnFirecannon;
-            @firecannon.canceled += instance.OnFirecannon;
-            @firemissile.started += instance.OnFiremissile;
-            @firemissile.performed += instance.OnFiremissile;
-            @firemissile.canceled += instance.OnFiremissile;
+            @fireweapon.started += instance.OnFireweapon;
+            @fireweapon.performed += instance.OnFireweapon;
+            @fireweapon.canceled += instance.OnFireweapon;
+            @nextweapon.started += instance.OnNextweapon;
+            @nextweapon.performed += instance.OnNextweapon;
+            @nextweapon.canceled += instance.OnNextweapon;
+            @previousweapon.started += instance.OnPreviousweapon;
+            @previousweapon.performed += instance.OnPreviousweapon;
+            @previousweapon.canceled += instance.OnPreviousweapon;
             @togglelandinggear.started += instance.OnTogglelandinggear;
             @togglelandinggear.performed += instance.OnTogglelandinggear;
             @togglelandinggear.canceled += instance.OnTogglelandinggear;
             @toggleautospeed.started += instance.OnToggleautospeed;
             @toggleautospeed.performed += instance.OnToggleautospeed;
             @toggleautospeed.canceled += instance.OnToggleautospeed;
+            @tracktarget.started += instance.OnTracktarget;
+            @tracktarget.performed += instance.OnTracktarget;
+            @tracktarget.canceled += instance.OnTracktarget;
+            @stoptrackingtarget.started += instance.OnStoptrackingtarget;
+            @stoptrackingtarget.performed += instance.OnStoptrackingtarget;
+            @stoptrackingtarget.canceled += instance.OnStoptrackingtarget;
         }
 
         private void UnregisterCallbacks(IGameplayActions instance)
@@ -434,18 +512,27 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @turn.started -= instance.OnTurn;
             @turn.performed -= instance.OnTurn;
             @turn.canceled -= instance.OnTurn;
-            @firecannon.started -= instance.OnFirecannon;
-            @firecannon.performed -= instance.OnFirecannon;
-            @firecannon.canceled -= instance.OnFirecannon;
-            @firemissile.started -= instance.OnFiremissile;
-            @firemissile.performed -= instance.OnFiremissile;
-            @firemissile.canceled -= instance.OnFiremissile;
+            @fireweapon.started -= instance.OnFireweapon;
+            @fireweapon.performed -= instance.OnFireweapon;
+            @fireweapon.canceled -= instance.OnFireweapon;
+            @nextweapon.started -= instance.OnNextweapon;
+            @nextweapon.performed -= instance.OnNextweapon;
+            @nextweapon.canceled -= instance.OnNextweapon;
+            @previousweapon.started -= instance.OnPreviousweapon;
+            @previousweapon.performed -= instance.OnPreviousweapon;
+            @previousweapon.canceled -= instance.OnPreviousweapon;
             @togglelandinggear.started -= instance.OnTogglelandinggear;
             @togglelandinggear.performed -= instance.OnTogglelandinggear;
             @togglelandinggear.canceled -= instance.OnTogglelandinggear;
             @toggleautospeed.started -= instance.OnToggleautospeed;
             @toggleautospeed.performed -= instance.OnToggleautospeed;
             @toggleautospeed.canceled -= instance.OnToggleautospeed;
+            @tracktarget.started -= instance.OnTracktarget;
+            @tracktarget.performed -= instance.OnTracktarget;
+            @tracktarget.canceled -= instance.OnTracktarget;
+            @stoptrackingtarget.started -= instance.OnStoptrackingtarget;
+            @stoptrackingtarget.performed -= instance.OnStoptrackingtarget;
+            @stoptrackingtarget.canceled -= instance.OnStoptrackingtarget;
         }
 
         public void RemoveCallbacks(IGameplayActions instance)
@@ -478,9 +565,12 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnBrake(InputAction.CallbackContext context);
         void OnRoll(InputAction.CallbackContext context);
         void OnTurn(InputAction.CallbackContext context);
-        void OnFirecannon(InputAction.CallbackContext context);
-        void OnFiremissile(InputAction.CallbackContext context);
+        void OnFireweapon(InputAction.CallbackContext context);
+        void OnNextweapon(InputAction.CallbackContext context);
+        void OnPreviousweapon(InputAction.CallbackContext context);
         void OnTogglelandinggear(InputAction.CallbackContext context);
         void OnToggleautospeed(InputAction.CallbackContext context);
+        void OnTracktarget(InputAction.CallbackContext context);
+        void OnStoptrackingtarget(InputAction.CallbackContext context);
     }
 }
