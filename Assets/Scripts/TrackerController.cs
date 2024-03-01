@@ -136,7 +136,8 @@ public class TrackerController : MonoBehaviour
         {
             for (int i = 0; i != targetsHits.Count(); i++)
             {
-                if (targetPoint == null || !GameObject.ReferenceEquals(targetPoint, targetsHits[i].collider.transform))
+                if (!trackerActivated  || (targetsHits[i].collider != null && 
+                    !GameObject.ReferenceEquals(targetPoint, targetsHits[i].collider.transform)))
                 {
                     targetPoint = targetsHits[i].collider.transform;
                     trackerActivated = true;
