@@ -6,14 +6,15 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour, PlayerControls.IGameplayActions
 {
-
     private PlayerControls controls;
     [SerializeField]
     private Rigidbody rafaleBody;
     [SerializeField]
     private Transform cannonTransform;
     [SerializeField]
-    private Transform crosshairTransform;
+    private ParticleSystem leftThruster;
+    [SerializeField]
+    private ParticleSystem rightThruster;
     [SerializeField]
     private float throttleAcceleration;
     [SerializeField]
@@ -35,6 +36,7 @@ public class PlayerController : MonoBehaviour, PlayerControls.IGameplayActions
     [SerializeField]
     private UnityEvent stopTrackingTarget;
 
+
     private float accelerateValue;
     private float throttleInput;
     private float brakeInput;
@@ -54,28 +56,31 @@ public class PlayerController : MonoBehaviour, PlayerControls.IGameplayActions
 
 
     private const string RetractGearsAnimParamName = "RetractLandingGears";
-    private const float DefaultPlaneDrag = 0.1f;
-    private const float GearsDrag = 0.1f;
-    private const float BrakeDrag = 1f;
-    private const float AngularDragDefault = 1f;
-    private const float AngularDragModifier = 0.1f;
+    private const float DefaultDrag = 0.1f;
+    private const float GearsDrag = 0.15f;
+    private const float BrakeDrag = 0.001f;
+    private const float TurnDrag = 0.7f;
     private const float MinSpeedAir = 100f;
     private const int SendHeightFramerule = 2;
     private const int SendCoordsFramerule = 1;
     private const int SendSpeedFramerule = 5;
+    private const float HeightTreshold = 15000f;
+    private const float HeightDrag = 200f;
+    private const float HeightDragTurn = 1f;
+
 
     private void Awake()
     {
         controls = new PlayerControls();
 
         controls.gameplay.turn.performed += OnTurn;
-        controls.gameplay.turn.canceled += context => torqueInput = Vector2.zero;
+        controls.gameplay.turn.canceled += OnCancelTurn;
         controls.gameplay.roll.performed += OnRoll;
-        controls.gameplay.roll.canceled += context => rollInput = 0;
+        controls.gameplay.roll.canceled += OnCancelRoll;
         controls.gameplay.accelerate.performed += OnAccelerate;
         controls.gameplay.accelerate.canceled += context => throttleInput = 0f;
         controls.gameplay.brake.performed += OnBrake;
-        controls.gameplay.brake.canceled += context => brakeInput = 0f;
+        controls.gameplay.brake.canceled += OnCancelBrake;
         controls.gameplay.fireweapon.performed += OnFireweapon;
         controls.gameplay.nextweapon.performed += OnNextweapon;
         controls.gameplay.previousweapon.performed += OnPreviousweapon;
@@ -95,8 +100,9 @@ public class PlayerController : MonoBehaviour, PlayerControls.IGameplayActions
         airbourneThresholdY = transform.position.y + 10;
         autoSpeed = 0;
         planeMagnitudeRounded = 0;
-        planeDrag = DefaultPlaneDrag;
+        planeDrag = DefaultDrag;
         sendHeightFrameCount = sendCoordsFrameCount = sendSpeedFrameCount = 0;
+        planeDrag = DefaultDrag;
     }
 
     // Update is called once per frame
@@ -137,6 +143,12 @@ public class PlayerController : MonoBehaviour, PlayerControls.IGameplayActions
         {
             sendSpeedFrameCount++;
         }
+
+        if(leftThruster.isPlaying && throttleInput == 0)
+        {
+            leftThruster.Stop();
+            rightThruster.Stop();
+        }
     }
 
     void FixedUpdate()
@@ -145,57 +157,46 @@ public class PlayerController : MonoBehaviour, PlayerControls.IGameplayActions
         if (throttleInput != 0)  // Accelerate using player input ignoring auto speed value
         {
             accelerateValue = throttleInput * throttleAcceleration;
-            rafaleBody.angularDrag += AngularDragModifier;
         }
         else
         {
-            ResetAngularDrag();
             if (isAirbourne && isAutoSpeedOn) // Maintain constant speed if enabled
             {
                 accelerateValue = rafaleBody.velocity.magnitude < autoSpeed ? throttleAcceleration : 0;
             }   
         }
         
-        planeDrag = DefaultPlaneDrag;
         if (brakeInput != 0)    // Brake engaged
         {
             if(rafaleBody.velocity.magnitude >= MinSpeedAir)
             {
-                planeDrag += BrakeDrag * brakeInput;
+                planeDrag += BrakeDrag;
             }
-            rafaleBody.angularDrag += AngularDragModifier;
         }
         else
         {
-            ResetAngularDrag();
             rafaleBody.AddRelativeForce(Vector3.forward * accelerateValue, ForceMode.Acceleration);
         }
 
-        if (!areGearsRetracted) // Flying with gears deployed adds drag
+        if(rafaleBody.position.y > HeightTreshold)
         {
-            planeDrag += GearsDrag;
+            rafaleBody.AddRelativeForce(Vector3.down * HeightDrag, ForceMode.Acceleration);
+            rafaleBody.AddRelativeTorque(Vector3.down * HeightDragTurn, ForceMode.Acceleration);
         }
-        rafaleBody.drag = planeDrag;
 
-        if (rafaleBody.velocity.magnitude > 1)
+        if (torqueInput != Vector2.zero && rafaleBody.velocity.magnitude > 1)
         {
+            planeDrag = TurnDrag;
             rafaleBody.AddRelativeTorque(torqueInput.y * pitchFactor * Vector3.right, ForceMode.Acceleration);
             rafaleBody.AddRelativeTorque(torqueInput.x * yawFactor * Vector3.up, ForceMode.Acceleration);
         }
 
         if (isAirbourne && rollInput != 0f)
         {
+            planeDrag = TurnDrag;
             rafaleBody.AddRelativeTorque(rollInput * rollFactor * Vector3.forward, ForceMode.Acceleration);
         }
-        
-    }
-
-    private void ResetAngularDrag()
-    {
-        if (rafaleBody.angularDrag != AngularDragDefault)
-        {
-            rafaleBody.angularDrag = AngularDragDefault;
-        }
+        rafaleBody.drag = planeDrag + (!areGearsRetracted ? GearsDrag : 0);
     }
 
     private void SetAutoSpeed()
@@ -207,8 +208,6 @@ public class PlayerController : MonoBehaviour, PlayerControls.IGameplayActions
         }
     }
 
-    // Controls section
-
     private void OnEnable()
     {
         controls.gameplay.Enable();
@@ -219,18 +218,39 @@ public class PlayerController : MonoBehaviour, PlayerControls.IGameplayActions
         controls.gameplay.Disable();
     }
 
+    // Controls section
+
     public void OnTurn(InputAction.CallbackContext context)
     {
         torqueInput = context.ReadValue<Vector2>();
+    }
+
+    private void OnCancelTurn(InputAction.CallbackContext context)
+    {
+        torqueInput = Vector2.zero;
+        planeDrag = DefaultDrag;
     }
 
     public void OnRoll(InputAction.CallbackContext context)
     {
         rollInput = context.ReadValue<float>();
     }
+
+    private void OnCancelRoll(InputAction.CallbackContext context)
+    {
+        rollInput = 0f;
+        planeDrag = DefaultDrag;
+    }
+
     public void OnAccelerate(InputAction.CallbackContext context)
     {
         throttleInput = context.ReadValue<float>();
+        planeDrag = DefaultDrag;
+        if (!leftThruster.isEmitting)
+        {
+            leftThruster.Play();
+            rightThruster.Play();
+        }
     }
 
     public void OnBrake(InputAction.CallbackContext context)
@@ -238,32 +258,48 @@ public class PlayerController : MonoBehaviour, PlayerControls.IGameplayActions
         brakeInput = context.ReadValue<float>();
     }
 
+    public void OnCancelBrake(InputAction.CallbackContext context)
+    {
+        brakeInput = 0f;
+        planeDrag = DefaultDrag;
+    }
+
     public void OnFireweapon(InputAction.CallbackContext context)
     {
         Debug.Log("Fire weapon");
     }
+
     public void OnNextweapon(InputAction.CallbackContext context)
     {
         Debug.Log("Next weapon");
     }
+
     public void OnPreviousweapon(InputAction.CallbackContext context)
     {
         Debug.Log("Previous weapon");
     }
+
     public void OnTogglelandinggear(InputAction.CallbackContext context)
     {
         areGearsRetracted = !areGearsRetracted;
+        if (!areGearsRetracted)
+        {
+            planeDrag += GearsDrag;
+        }
         playerAnimator.SetBool(RetractGearsAnimParamName, areGearsRetracted);
     }
+
     public void OnToggleautospeed(InputAction.CallbackContext context)
     {
         SetAutoSpeed();
         updateAutoSpeedIndicator.Invoke(isAutoSpeedOn, planeMagnitudeRounded);
     }
+
     public void OnTracktarget(InputAction.CallbackContext context)
     {
         trackTarget.Invoke();
     }
+
     public void OnStoptrackingtarget(InputAction.CallbackContext context)
     {
         stopTrackingTarget.Invoke();

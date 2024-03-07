@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public class SeaGeneratorController : MonoBehaviour
+public class GroundGeneratorController : MonoBehaviour
 {
     [SerializeField]
     private GameObject tilePrefab;
@@ -15,7 +15,8 @@ public class SeaGeneratorController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("Generating ground tiles...");
+        numberOfTilesLength = 50; // DEBUG
+
         Bounds tilePrefabBounds = tilePrefab.GetComponent<MeshRenderer>().bounds;
         Vector3 tileGlobalSize = tilePrefabBounds.max - tilePrefabBounds.min;
         Vector3 startingTilePosition = centerPointTransform.position;
@@ -32,10 +33,8 @@ public class SeaGeneratorController : MonoBehaviour
                 currentTilePosition.z = startingTilePosition.z - (j * tileGlobalSize.z);
                 GameObject tile = GameObject.Instantiate(tilePrefab, currentTilePosition, Quaternion.identity);
                 tile.transform.parent = transform;
-                Debug.Log("Ground tile (" + i + ", " + j + ") generated."  );
             }
         }
-        Debug.Log("Generating ground tiles completed successfully.");
     }
 
 }

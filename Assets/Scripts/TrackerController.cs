@@ -73,10 +73,12 @@ public class TrackerController : MonoBehaviour
             obj.SetActive(activate);
         }
     }
+
     private bool IsInPlayerRange()
     {   
         return objectViewPosition.z < CoveredDistance;
     }
+
     private void DisplayPointOnTracker()
     {
         objectViewPosition = mainCamera.WorldToViewportPoint(targetPoint.position);
@@ -128,6 +130,7 @@ public class TrackerController : MonoBehaviour
         }
 
     }
+
     public void TrackTarget()
     {
         targetsRay = new Ray(playerPoint.position, playerPoint.TransformDirection(Vector3.forward));
@@ -147,6 +150,7 @@ public class TrackerController : MonoBehaviour
             }
         }
     }
+
     public void StopTracking()
     {
         foreach (GameObject arrow in trackerArrows)
