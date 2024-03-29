@@ -31,8 +31,6 @@ public class TrackerController : MonoBehaviour
     RaycastHit [] targetsHits;
     Ray targetsRay;
 
-    private const string EnemyPointTagName = "RadarPointEnemy";
-    public const float CoveredDistance = 30000;
 
     // Start is called before the first frame update
     void Start()
@@ -42,10 +40,10 @@ public class TrackerController : MonoBehaviour
         trackerDistance.text = "999999";
         enemyColour = new Color32(255, 66, 0, 255);
         allyColour = new Color32(0, 255, 7, 255);
-        trackableDistanceMax = CoveredDistance / 2;
+        trackableDistanceMax = Constants.CoveredDistance / 2;
         trackerActivated = false;
         isTargetEnemy = false;
-        radarObjectsLayer = LayerMask.GetMask("RadarTracked");
+        radarObjectsLayer = LayerMask.GetMask(Constants.RadarPointLayerName);
         targetsHits = new RaycastHit[2];
     }
 
@@ -54,13 +52,15 @@ public class TrackerController : MonoBehaviour
     {
         if(trackerActivated)
         {
-            DisplayPointOnTracker();
-            if (!IsInPlayerRange())
+            if (targetPoint.IsUnityNull() || !IsInPlayerRange())
             {
                 StopTracking();
             }
+            else
+            {
+                DisplayPointOnTracker();
+            }
         }
-        
     }
     private void SetActiveAndColour(GameObject obj, bool activate)
     {
@@ -76,7 +76,7 @@ public class TrackerController : MonoBehaviour
 
     private bool IsInPlayerRange()
     {   
-        return objectViewPosition.z < CoveredDistance;
+        return objectViewPosition.z < Constants.CoveredDistance;
     }
 
     private void DisplayPointOnTracker()
@@ -144,7 +144,7 @@ public class TrackerController : MonoBehaviour
                 {
                     targetPoint = targetsHits[i].collider.transform;
                     trackerActivated = true;
-                    isTargetEnemy = targetPoint.CompareTag(EnemyPointTagName);
+                    isTargetEnemy = targetPoint.CompareTag(Constants.EnemyPointTagName);
                     break;
                 }
             }

@@ -22,37 +22,37 @@ public class UIController : MonoBehaviour
     private Transform crshPositionTransform;
     [SerializeField]
     private Camera mainCamera;
+    [SerializeField]
+    private GameObject [] weaponIcons;
+    [SerializeField]
+    private TextMeshProUGUI ammoLeftDisplay;
 
     private int speedDisplayed;
-    private const string DefaultSpeedValue = "Speed: 0000 km/h";
-    private const string DefaultAutoSpeedValue = "Auto speed: 0000 km/h";
-    private const float HeightMeterValueMin = 0f;
-    private const float HeightMeterValueAlert = 1000f;
-    private const float HeightMeterValueMax = 15230f;
-    private Color32 heightAboveAlertColor;
-    private Color32 heightBelowAlertColor;
-    private Color32 autoSpeedColorOff;
-    private Color32 autoSpeedColorOn;
     private Image heightMeterBkg;
     private Vector2 crosshairUIPosition;
+    private int weaponsAdded;
+    private int currentWeaponIconIdx;
+
+
+    void Awake()
+    {
+        weaponsAdded = 0;
+    }
 
     // Start is called before the first frame update
     void Start()
     {
-        speedometer.text = DefaultSpeedValue;
-        autoSpeedIndicator.text = DefaultAutoSpeedValue;
+        speedometer.text = Constants.DefaultSpeedValueUI;
+        autoSpeedIndicator.text = Constants.DefaultAutoSpeedValueUI;
         speedDisplayed = 0;
-        autoSpeedColorOff = new Color32(130, 130, 130, 190);
-        autoSpeedColorOn = new Color32(53, 255, 0, 255);
-        heightAboveAlertColor = new Color32(80, 255, 0, 255);
-        heightBelowAlertColor = new Color32(255, 141, 0, 255);
-        autoSpeedIndicator.color = autoSpeedColorOff;
+        autoSpeedIndicator.color = Constants.autoSpeedColorOff;
         heightMeter.value = 0f;
-        heightMeter.minValue = HeightMeterValueMin;
-        heightMeter.maxValue = HeightMeterValueMax;
+        heightMeter.minValue = Constants.HeightMeterValueMinUI;
+        heightMeter.maxValue = Constants.HeightMeterValueMaxUI;
         heightMeterBkg = heightMeter.GetComponentInChildren<Image>();
-        heightMeterBkg.color = heightBelowAlertColor;
+        heightMeterBkg.color = Constants.heightBelowAlertColor;
         crosshairUIPosition = Vector2.zero;
+        currentWeaponIconIdx = 0;
     }
 
     private void Update()
@@ -81,32 +81,70 @@ public class UIController : MonoBehaviour
         if(isTurnedOn)
         {
             autoSpeedIndicator.text = "Auto speed: " + newAutoSpeed.ToString().PadLeft(4, '0') + " km/h";
-            autoSpeedIndicator.color = autoSpeedColorOn;
+            autoSpeedIndicator.color = Constants.autoSpeedColorOn;
         }
         else
         {
-            autoSpeedIndicator.color = autoSpeedColorOff;
+            autoSpeedIndicator.color = Constants.autoSpeedColorOff;
         }
     }
 
     public void UpdateHeightMeter(float height)
     {
-        if (height <= HeightMeterValueAlert && heightMeter.maxValue != HeightMeterValueAlert)
+        if (height <= Constants.HeightMeterValueAlertUI && heightMeter.maxValue != Constants.HeightMeterValueAlertUI)
         {
-            heightMeter.maxValue = HeightMeterValueAlert;
+            heightMeter.maxValue = Constants.HeightMeterValueAlertUI;
             heightMeter.minValue = 0f;
-            heightMeterBkg.color = heightBelowAlertColor;
-            heightNumeric.color = heightBelowAlertColor;
+            heightMeterBkg.color = Constants.heightBelowAlertColor;
+            heightNumeric.color = Constants.heightBelowAlertColor;
         }
-        else if (height > HeightMeterValueAlert && heightMeter.maxValue != HeightMeterValueMax)
+        else if (height > Constants.HeightMeterValueAlertUI && heightMeter.maxValue != Constants.HeightMeterValueMaxUI)
         {
-            heightMeter.maxValue = HeightMeterValueMax;
-            heightMeter.minValue = HeightMeterValueAlert;
-            heightMeterBkg.color = heightAboveAlertColor;
-            heightNumeric.color = heightAboveAlertColor;
+            heightMeter.maxValue = Constants.HeightMeterValueMaxUI;
+            heightMeter.minValue = Constants.HeightMeterValueAlertUI;
+            heightMeterBkg.color = Constants.heightAboveAlertColor;
+            heightNumeric.color = Constants.heightAboveAlertColor;
         }
         heightMeter.value = height;
-        heightNumeric.text = ((int) Mathf.Clamp(height, 0f, HeightMeterValueMax)).ToString().PadLeft(5, '0') + " m";
+        heightNumeric.text = ((int) Mathf.Clamp(height, 0f, Constants.HeightMeterValueMaxUI)).ToString().PadLeft(5, '0') + " m";
+    }
+
+    public void SwitchCurrentWeapon(int weaponIdx, int ammoAmount)
+    {
+        weaponIcons[currentWeaponIconIdx].SetActive(!weaponIcons[0].activeSelf);
+        weaponIcons[weaponIdx].SetActive(!weaponIcons[weaponIdx].activeSelf);
+        currentWeaponIconIdx = weaponIdx;
+        UpdateWeaponAmmo(ammoAmount);
+    }
+
+    public void UpdateWeaponAmmo(int ammo)
+    {
+        ammoLeftDisplay.text =  ammo.ToString();
+        if(ammo == 0)
+        {
+            weaponIcons[currentWeaponIconIdx].GetComponent<RawImage>().color = Constants.weaponEmptyIconColor;
+        }
+    }
+
+    public void AddWeapon(string iconPath)
+    {
+        if(weaponsAdded != Constants.MaxNumWeapons)
+        {
+            weaponIcons[weaponsAdded].GetComponent<RawImage>().texture = Resources.Load<Texture2D>(iconPath);
+            weaponsAdded++;
+            if(weaponsAdded == Constants.MaxNumWeapons)
+            {
+                weaponIcons[0].SetActive(true);
+                for(int i = 1; i != Constants.MaxNumWeapons; i++)
+                {
+                    weaponIcons[i].SetActive(false);
+                }
+            }
+        }
+        else
+        {
+            Debug.Log("Attempting to add more weapon icons than allowed.");
+        }
     }
 
 }

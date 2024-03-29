@@ -73,27 +73,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""next weapon"",
+                    ""name"": ""switch weapon"",
                     ""type"": ""Button"",
                     ""id"": ""9b01327c-1a2d-40a7-81e2-8be160693e72"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""previous weapon"",
-                    ""type"": ""Button"",
-                    ""id"": ""8b00f0b0-7689-4bb1-b5b1-4b609c9e527e"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""toggle landing gear"",
-                    ""type"": ""Button"",
-                    ""id"": ""fe1c7e9a-0a45-4e92-b998-026f2eba9f60"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -131,22 +113,11 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""7a64551b-14d2-415b-97db-b3855bb62943"",
-                    ""path"": ""<Keyboard>/p"",
+                    ""path"": ""<Keyboard>/numpad8"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard"",
                     ""action"": ""fire weapon"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""3d6819ab-5273-4f2c-bd2f-868dded4fa02"",
-                    ""path"": ""<Keyboard>/r"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard"",
-                    ""action"": ""toggle landing gear"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -296,7 +267,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""58dfeda7-cdd7-41f5-9562-ec6a580b50a5"",
-                    ""path"": ""<Keyboard>/l"",
+                    ""path"": ""<Keyboard>/numpad4"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard"",
@@ -307,7 +278,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""0f993afa-f1e1-45d0-bdcd-dffef9b7a714"",
-                    ""path"": ""<Keyboard>/k"",
+                    ""path"": ""<Keyboard>/numpad5"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard"",
@@ -318,22 +289,11 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""b5d4e472-69f5-40bc-a4e8-10e94a0c7b2a"",
-                    ""path"": ""<Keyboard>/rightBracket"",
+                    ""path"": ""<Keyboard>/numpad9"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard"",
-                    ""action"": ""next weapon"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""6b71f2dc-2604-4ecd-b6d7-680c66ce3789"",
-                    ""path"": ""<Keyboard>/leftBracket"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard"",
-                    ""action"": ""previous weapon"",
+                    ""action"": ""switch weapon"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -361,9 +321,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_gameplay_roll = m_gameplay.FindAction("roll", throwIfNotFound: true);
         m_gameplay_turn = m_gameplay.FindAction("turn", throwIfNotFound: true);
         m_gameplay_fireweapon = m_gameplay.FindAction("fire weapon", throwIfNotFound: true);
-        m_gameplay_nextweapon = m_gameplay.FindAction("next weapon", throwIfNotFound: true);
-        m_gameplay_previousweapon = m_gameplay.FindAction("previous weapon", throwIfNotFound: true);
-        m_gameplay_togglelandinggear = m_gameplay.FindAction("toggle landing gear", throwIfNotFound: true);
+        m_gameplay_switchweapon = m_gameplay.FindAction("switch weapon", throwIfNotFound: true);
         m_gameplay_toggleautospeed = m_gameplay.FindAction("toggle auto speed", throwIfNotFound: true);
         m_gameplay_tracktarget = m_gameplay.FindAction("track target", throwIfNotFound: true);
         m_gameplay_stoptrackingtarget = m_gameplay.FindAction("stop tracking target", throwIfNotFound: true);
@@ -433,9 +391,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_gameplay_roll;
     private readonly InputAction m_gameplay_turn;
     private readonly InputAction m_gameplay_fireweapon;
-    private readonly InputAction m_gameplay_nextweapon;
-    private readonly InputAction m_gameplay_previousweapon;
-    private readonly InputAction m_gameplay_togglelandinggear;
+    private readonly InputAction m_gameplay_switchweapon;
     private readonly InputAction m_gameplay_toggleautospeed;
     private readonly InputAction m_gameplay_tracktarget;
     private readonly InputAction m_gameplay_stoptrackingtarget;
@@ -448,9 +404,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         public InputAction @roll => m_Wrapper.m_gameplay_roll;
         public InputAction @turn => m_Wrapper.m_gameplay_turn;
         public InputAction @fireweapon => m_Wrapper.m_gameplay_fireweapon;
-        public InputAction @nextweapon => m_Wrapper.m_gameplay_nextweapon;
-        public InputAction @previousweapon => m_Wrapper.m_gameplay_previousweapon;
-        public InputAction @togglelandinggear => m_Wrapper.m_gameplay_togglelandinggear;
+        public InputAction @switchweapon => m_Wrapper.m_gameplay_switchweapon;
         public InputAction @toggleautospeed => m_Wrapper.m_gameplay_toggleautospeed;
         public InputAction @tracktarget => m_Wrapper.m_gameplay_tracktarget;
         public InputAction @stoptrackingtarget => m_Wrapper.m_gameplay_stoptrackingtarget;
@@ -478,15 +432,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @fireweapon.started += instance.OnFireweapon;
             @fireweapon.performed += instance.OnFireweapon;
             @fireweapon.canceled += instance.OnFireweapon;
-            @nextweapon.started += instance.OnNextweapon;
-            @nextweapon.performed += instance.OnNextweapon;
-            @nextweapon.canceled += instance.OnNextweapon;
-            @previousweapon.started += instance.OnPreviousweapon;
-            @previousweapon.performed += instance.OnPreviousweapon;
-            @previousweapon.canceled += instance.OnPreviousweapon;
-            @togglelandinggear.started += instance.OnTogglelandinggear;
-            @togglelandinggear.performed += instance.OnTogglelandinggear;
-            @togglelandinggear.canceled += instance.OnTogglelandinggear;
+            @switchweapon.started += instance.OnSwitchweapon;
+            @switchweapon.performed += instance.OnSwitchweapon;
+            @switchweapon.canceled += instance.OnSwitchweapon;
             @toggleautospeed.started += instance.OnToggleautospeed;
             @toggleautospeed.performed += instance.OnToggleautospeed;
             @toggleautospeed.canceled += instance.OnToggleautospeed;
@@ -515,15 +463,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @fireweapon.started -= instance.OnFireweapon;
             @fireweapon.performed -= instance.OnFireweapon;
             @fireweapon.canceled -= instance.OnFireweapon;
-            @nextweapon.started -= instance.OnNextweapon;
-            @nextweapon.performed -= instance.OnNextweapon;
-            @nextweapon.canceled -= instance.OnNextweapon;
-            @previousweapon.started -= instance.OnPreviousweapon;
-            @previousweapon.performed -= instance.OnPreviousweapon;
-            @previousweapon.canceled -= instance.OnPreviousweapon;
-            @togglelandinggear.started -= instance.OnTogglelandinggear;
-            @togglelandinggear.performed -= instance.OnTogglelandinggear;
-            @togglelandinggear.canceled -= instance.OnTogglelandinggear;
+            @switchweapon.started -= instance.OnSwitchweapon;
+            @switchweapon.performed -= instance.OnSwitchweapon;
+            @switchweapon.canceled -= instance.OnSwitchweapon;
             @toggleautospeed.started -= instance.OnToggleautospeed;
             @toggleautospeed.performed -= instance.OnToggleautospeed;
             @toggleautospeed.canceled -= instance.OnToggleautospeed;
@@ -566,9 +508,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnRoll(InputAction.CallbackContext context);
         void OnTurn(InputAction.CallbackContext context);
         void OnFireweapon(InputAction.CallbackContext context);
-        void OnNextweapon(InputAction.CallbackContext context);
-        void OnPreviousweapon(InputAction.CallbackContext context);
-        void OnTogglelandinggear(InputAction.CallbackContext context);
+        void OnSwitchweapon(InputAction.CallbackContext context);
         void OnToggleautospeed(InputAction.CallbackContext context);
         void OnTracktarget(InputAction.CallbackContext context);
         void OnStoptrackingtarget(InputAction.CallbackContext context);
