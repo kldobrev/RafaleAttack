@@ -17,10 +17,6 @@ public class UIController : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI heightNumeric;
     [SerializeField]
-    private Transform crosshairUITransform;
-    [SerializeField]
-    private Transform crshPositionTransform;
-    [SerializeField]
     private Camera mainCamera;
     [SerializeField]
     private GameObject [] weaponIcons;
@@ -29,7 +25,6 @@ public class UIController : MonoBehaviour
 
     private int speedDisplayed;
     private Image heightMeterBkg;
-    private Vector2 crosshairUIPosition;
     private int weaponsAdded;
     private int currentWeaponIconIdx;
 
@@ -51,20 +46,7 @@ public class UIController : MonoBehaviour
         heightMeter.maxValue = Constants.HeightMeterValueMaxUI;
         heightMeterBkg = heightMeter.GetComponentInChildren<Image>();
         heightMeterBkg.color = Constants.heightBelowAlertColor;
-        crosshairUIPosition = Vector2.zero;
         currentWeaponIconIdx = 0;
-    }
-
-    private void Update()
-    {
-        UpdateCrosshairTransform();
-    }
-
-    private void UpdateCrosshairTransform()
-    {
-        crosshairUIPosition = mainCamera.WorldToScreenPoint(crshPositionTransform.position);
-        crosshairUITransform.position = crosshairUIPosition;
-        crosshairUITransform.eulerAngles = Vector3.forward * crshPositionTransform.eulerAngles.z;
     }
 
     public void UpdateSpeedometer(int newSpeed)
@@ -111,7 +93,7 @@ public class UIController : MonoBehaviour
 
     public void SwitchCurrentWeapon(int weaponIdx, int ammoAmount)
     {
-        weaponIcons[currentWeaponIconIdx].SetActive(!weaponIcons[0].activeSelf);
+        weaponIcons[currentWeaponIconIdx].SetActive(!weaponIcons[currentWeaponIconIdx].activeSelf);
         weaponIcons[weaponIdx].SetActive(!weaponIcons[weaponIdx].activeSelf);
         currentWeaponIconIdx = weaponIdx;
         UpdateWeaponAmmo(ammoAmount);

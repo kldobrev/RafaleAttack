@@ -18,6 +18,10 @@ public class PlayerController : MonoBehaviour, PlayerControls.IGameplayActions
     [SerializeField]
     private ParticleSystem rightThruster;
     [SerializeField]
+    private Transform crosshairTransform;
+    [SerializeField]
+    private GameObject heatSource;
+    [SerializeField]
     private float throttleAcceleration;
     [SerializeField]
     private float pitchFactor;
@@ -60,6 +64,7 @@ public class PlayerController : MonoBehaviour, PlayerControls.IGameplayActions
     private int sendCoordsFrameCount;
     private int sendSpeedFrameCount;
     private int selectedWeaponIdx;
+    public static float currentWeaponRange;
 
 
     private void Awake()
@@ -96,8 +101,10 @@ public class PlayerController : MonoBehaviour, PlayerControls.IGameplayActions
         planeDrag = Constants.PlDefaultDrag;
         selectedWeaponIdx = 0;
         uiAmmoTracker = transform.GetComponent<AmmunitionUITracker>();
-        weapons[selectedWeaponIdx].SetWeapon(Constants.BulletCannon);   // Will be set by player
+        weapons[0].SetWeapon(Constants.HeatseekerMissile);   // Will be set by player
+        weapons[1].SetWeapon(Constants.BulletCannon);   // Will be set by player
         uiAmmoTracker.UpdateWeaponAmmoInUI(weapons[selectedWeaponIdx].Ammunition);
+        currentWeaponRange = weapons[selectedWeaponIdx].Range;
     }
 
     // Update is called once per frame
@@ -210,6 +217,7 @@ public class PlayerController : MonoBehaviour, PlayerControls.IGameplayActions
         {
             playerAnimator.SetBool(Constants.RetractGearsAnimParamName, true);
             collidedWith.SetActive(false);
+            heatSource.SetActive(true);
         }
     }
 

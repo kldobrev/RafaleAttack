@@ -4,13 +4,15 @@ public static class Constants {
 
     // Weapons
 
-    public static WeaponData BulletCannon = new WeaponData("Bullet cannon", 5, 2000, 1000, "WeaponIcons/CannonRound", "CannonEffectPrefabs/FireBulletEffect");
+    public static WeaponData BulletCannon = new WeaponData("Bullet Cannon", 5, 2000, 1000, 0, "WeaponIcons/BulletCannonIcon", "CannonEffectPrefabs/FireBulletEffect");
+    public static WeaponData HeatseekerMissile = new WeaponData("Heatseeker Missile", 200, 10000, 30, 10, "WeaponIcons/HeatseekerMissileIcon", "");
 
     // Weapon controllers
 
     public const string EnemyLayerName = "Enemy";
     public const string PlayerLayerName = "Player";
-    public const int MaxNumWeapons = 1; // Change when adding missiles
+    public const int MaxNumWeapons = 2; // Change when adding missiles
+    public const int FireMissileWaitSeconds = 3;
 
     // Enemy Seahawk
 

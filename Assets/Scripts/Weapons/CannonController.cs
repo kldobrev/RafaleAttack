@@ -9,6 +9,8 @@ using UnityEngine.Events;
 public class CannonController : WeaponContainer
 {
     [SerializeField]
+    protected Transform cannonEffectPoint;
+    [SerializeField]
     protected int rateOfFireFrames = 3;
     [SerializeField]
     protected UnityEvent<int> giveDamage;
@@ -20,6 +22,7 @@ public class CannonController : WeaponContainer
     protected float cannonRange;
     protected int enemyLayer;
     protected RaycastHit enemy;
+    public override float Range => cannonRange;
 
 
     // Start is called before the first frame update
@@ -76,8 +79,8 @@ public class CannonController : WeaponContainer
         capacity = weapon.capacity;
         ammoLeft = capacity;
         cannonRange = weapon.range;
-        GameObject particleEffectObj = Instantiate(Resources.Load<GameObject>(weapon.particleSystemPath), originPoint.transform);
-        particleEffectObj.transform.parent = originPoint;
+        GameObject particleEffectObj = Instantiate(Resources.Load<GameObject>(weapon.particleSystemPath), cannonEffectPoint.transform);
+        particleEffectObj.transform.parent = cannonEffectPoint;
         cannonFireEffect = particleEffectObj.GetComponent<ParticleSystem>();
     }
 

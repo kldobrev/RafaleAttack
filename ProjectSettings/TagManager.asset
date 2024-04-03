@@ -8,6 +8,7 @@ TagManager:
   - RadarPointAlly
   - RadarPointEnemy
   - GearsRetractor
+  - HeatSource
   layers:
   - Default
   - TransparentFX

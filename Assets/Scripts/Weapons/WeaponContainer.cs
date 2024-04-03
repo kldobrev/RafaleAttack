@@ -11,6 +11,7 @@ public abstract class WeaponContainer : MonoBehaviour
     protected Transform directionPoint;
     protected int capacity;
     protected int ammoLeft;
+    public abstract float Range { get; }
     public int Ammunition => ammoLeft;
 
     public abstract void Fire();

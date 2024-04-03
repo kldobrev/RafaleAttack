@@ -16,6 +16,10 @@ public class TrackerController : MonoBehaviour
     private Transform trackerPointer;
     [SerializeField]
     private Transform playerPoint;
+    [SerializeField]
+    private Transform crosshairUITransform;
+    [SerializeField]
+    private Transform crshPositionTransform;
 
     private Vector2 trackerPointerPosition;
     private GameObject trackerPointerObject;
@@ -23,6 +27,7 @@ public class TrackerController : MonoBehaviour
     private Vector3 objectViewPosition;
     private Color32 enemyColour;
     private Color32 allyColour;
+    private Vector2 crosshairUIPosition;
     private float trackableDistanceMax;
     private int radarObjectsLayer;
     private bool trackerActivated;
@@ -45,12 +50,14 @@ public class TrackerController : MonoBehaviour
         isTargetEnemy = false;
         radarObjectsLayer = LayerMask.GetMask(Constants.RadarPointLayerName);
         targetsHits = new RaycastHit[2];
+        crosshairUIPosition = Vector2.zero;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(trackerActivated)
+        UpdateCrosshairTransform();
+        if (trackerActivated)
         {
             if (targetPoint.IsUnityNull() || !IsInPlayerRange())
             {
@@ -62,6 +69,13 @@ public class TrackerController : MonoBehaviour
             }
         }
     }
+    private void UpdateCrosshairTransform()
+    {
+        crosshairUIPosition = mainCamera.WorldToScreenPoint(crshPositionTransform.position);
+        crosshairUITransform.position = crosshairUIPosition;
+        crosshairUITransform.eulerAngles = Vector3.forward * crshPositionTransform.eulerAngles.z;
+    }
+
     private void SetActiveAndColour(GameObject obj, bool activate)
     {
         if (obj.activeSelf != activate)
