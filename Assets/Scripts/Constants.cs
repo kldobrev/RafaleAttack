@@ -4,8 +4,8 @@ public static class Constants {
 
     // Weapons
 
-    public static WeaponData BulletCannon = new WeaponData("Bullet Cannon", 5, 2000, 1000, 0, "WeaponIcons/BulletCannonIcon", "CannonEffectPrefabs/FireBulletEffect");
-    public static WeaponData HeatseekerMissile = new WeaponData("Heatseeker Missile", 200, 10000, 30, 10, "WeaponIcons/HeatseekerMissileIcon", "");
+    public static WeaponData BulletCannon = new WeaponData("Bullet Cannon", 5, 2000, 1000, 0, "WeaponIcons/BulletCannonIcon", "CannonEffectPrefabs/FireBulletEffect", "");
+    public static WeaponData HeatseekerMissile = new WeaponData("Heatseeker Missile", 200, 10000, 30, 10, "WeaponIcons/HeatseekerMissileIcon", "", "MissilePrefabs/HeatseekerMissile");
 
     // Weapon controllers
 
@@ -13,6 +13,8 @@ public static class Constants {
     public const string PlayerLayerName = "Player";
     public const int MaxNumWeapons = 2; // Change when adding missiles
     public const int FireMissileWaitSeconds = 3;
+    public const float MissileSpeed = 500;
+    public const string HeatSignatureTag = "HeatSource";
 
     // Enemy Seahawk
 
@@ -40,6 +42,7 @@ public static class Constants {
     public const float HeightTreshold = 15000f;
     public const float HeightDrag = 200f;
     public const float HeightDragTurn = 1f;
+    public const string GearsRetractTriggerTag = "GearsRetractor";
 
     // Tracker controller
 

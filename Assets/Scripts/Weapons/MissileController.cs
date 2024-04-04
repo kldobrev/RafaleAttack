@@ -4,30 +4,29 @@ using UnityEngine;
 
 public abstract class MissileController : MonoBehaviour
 {
-    private float activeTime;
-    private float damage;
-    private float range;
-
-    // Start is called before the first frame update
-    protected virtual void Start()
-    {
-        StartCoroutine(ActiveCountdown());
-    }
+    [SerializeField]
+    protected Collider missileCollider;
+    protected Rigidbody missileBody;
+    protected Transform attacker;
+    protected Transform target;
 
     // Update is called once per frame
     protected abstract void Update();
 
-    public void ConfigureMissile(WeaponData weapon)
+    protected IEnumerator ActiveCountdown(float time)
     {
-        activeTime = weapon.activeTime;
-        damage = weapon.damageAmount;
-        range = weapon.range;
+        yield return new WaitForSeconds(time);
+        Destroy(gameObject);
     }
 
-    protected IEnumerator ActiveCountdown()
+    public void ConfigureMissile(Transform source, float startVelocity)
     {
-        yield return new WaitForSeconds(activeTime);
-        Destroy(gameObject);
+        attacker = source;
+        missileBody = transform.GetComponent<Rigidbody>();
+        missileBody.AddRelativeForce(startVelocity * Vector3.forward, ForceMode.VelocityChange);
+        missileBody.rotation = attacker.rotation;
+        //missileCollider.excludeLayers = source.gameObject.layer;
+        // Todo: exclude parent layer correctly
     }
 
 }

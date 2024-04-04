@@ -5,18 +5,15 @@ using UnityEngine;
 
 public class PlayerMissileContainerController : MissileContainerController
 {
-    private WeaponData missileType;
-
     public override void Fire()
     {
-        if (missileReady)
+        if (missileReady && ammoLeft != 0)
         {
             missileReady = false;
             currentSpawnPosIdx = currentSpawnPosIdx == 0 ? 1 : 0;
             Transform missile = Instantiate(missileTypePrefab, originPoint).transform;
             missile.Translate(spawnPositions[currentSpawnPosIdx]);
-            missile.AddComponent<HeatseekerMissileController>();
-            missile.GetComponent<MissileController>().ConfigureMissile(missileType);
+            missile.GetComponent<MissileController>().ConfigureMissile(transform, aircraftBody.velocity.magnitude);
             StartCoroutine(MissileReadyCountdown());
             ammoLeft--;
             PlayerController.uiAmmoTracker.UpdateWeaponAmmoInUI(Ammunition);
@@ -26,6 +23,6 @@ public class PlayerMissileContainerController : MissileContainerController
     {
         base.SetWeapon(weapon);
         PlayerController.uiAmmoTracker.AddWeaponIcon(weapon.iconPath);
-        missileType = weapon;
+        missileTypePrefab = Resources.Load<GameObject>(weapon.prefabPath);
     }
 }

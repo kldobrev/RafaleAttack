@@ -8,6 +8,7 @@ public class MissileContainerController : WeaponContainer
     protected Vector3 [] spawnPositions;
     protected int currentSpawnPosIdx;
     protected bool missileReady;
+    protected Rigidbody aircraftBody;
     public override float Range => 0;
 
     [SerializeField]
@@ -15,12 +16,13 @@ public class MissileContainerController : WeaponContainer
 
     public override void Fire()
     {
-        if(missileReady)
+        if (missileReady && ammoLeft != 0)
         {
             missileReady = false;
             currentSpawnPosIdx = currentSpawnPosIdx == 0 ? 1 : 0;
             Transform missile = Instantiate(missileTypePrefab, originPoint).transform;
             missile.Translate(spawnPositions[currentSpawnPosIdx]);
+            missile.GetComponent<MissileController>().ConfigureMissile(transform, aircraftBody.velocity.magnitude);
             StartCoroutine(MissileReadyCountdown());
             ammoLeft--;
         }
@@ -37,6 +39,7 @@ public class MissileContainerController : WeaponContainer
         ammoLeft = capacity;
         currentSpawnPosIdx = 0;
         missileReady = true;
+        aircraftBody = transform.GetComponent<Rigidbody>();
     }
 
     protected IEnumerator MissileReadyCountdown()

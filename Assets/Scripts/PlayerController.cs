@@ -213,7 +213,7 @@ public class PlayerController : MonoBehaviour, PlayerControls.IGameplayActions
     private void OnTriggerEnter(Collider other)
     {
         GameObject collidedWith = other.gameObject;
-        if(collidedWith.CompareTag("GearsRetractor"))   // Retract landing gears automatically after leaving the runway
+        if(collidedWith.CompareTag(Constants.GearsRetractTriggerTag))   // Retract landing gears automatically after leaving the runway
         {
             playerAnimator.SetBool(Constants.RetractGearsAnimParamName, true);
             collidedWith.SetActive(false);

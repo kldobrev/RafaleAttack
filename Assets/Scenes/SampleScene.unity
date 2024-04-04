@@ -14291,8 +14291,7 @@ MonoBehaviour:
   spawnPositions:
   - {x: -6.5, y: -2, z: -7}
   - {x: 6.5, y: -2, z: -7}
-  missileTypePrefab: {fileID: 7454395505990336059, guid: 0bf346b95698cbb4cbf5ac72339b0807,
-    type: 3}
+  missileTypePrefab: {fileID: 0}
 --- !u!1 &2092771972
 GameObject:
   m_ObjectHideFlags: 0
