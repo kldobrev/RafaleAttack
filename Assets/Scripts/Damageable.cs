@@ -6,6 +6,8 @@ using UnityEngine;
 public class Damageable : MonoBehaviour
 {
     [SerializeField]
+    private GameObject wrapperObject;
+    [SerializeField]
     private int shield;
 
     public void TakeDamage(int amount)
@@ -13,7 +15,7 @@ public class Damageable : MonoBehaviour
         shield -= amount;
         if(shield <= 0)
         {
-            Destroy(gameObject);
+            Destroy(wrapperObject);
         }
     }
 }

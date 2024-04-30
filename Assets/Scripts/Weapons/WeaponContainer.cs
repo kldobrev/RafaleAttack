@@ -12,6 +12,7 @@ public abstract class WeaponContainer : MonoBehaviour
     protected int capacity;
     protected int ammoLeft;
     public abstract float Range { get; }
+    public abstract float LockingStep { get; }
     public int Ammunition => ammoLeft;
 
     public abstract void Fire();

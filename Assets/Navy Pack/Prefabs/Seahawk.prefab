@@ -12,12 +12,12 @@ GameObject:
   - component: {fileID: 323572692770083617}
   - component: {fileID: 6287314032849858520}
   - component: {fileID: -3723237725194910348}
+  - component: {fileID: 9188290485695762585}
   - component: {fileID: 3520637551541775179}
   - component: {fileID: 6576225340642008767}
-  - component: {fileID: 9188290485695762585}
   m_Layer: 6
   m_Name: Seahawk
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -116,33 +116,6 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: -1
   m_Mesh: {fileID: -9069522284548219780, guid: 9759800d67ac18d48bcf9a10ce6aa287, type: 3}
---- !u!114 &3520637551541775179
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5727963831297776388}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6ce72a4191571954784ddceb3aa45927, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sideTorque: 0
-  frontTorque: 0
---- !u!114 &6576225340642008767
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5727963831297776388}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21563f2af9b607341ab5106701d306de, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  shield: 50
 --- !u!54 &9188290485695762585
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -170,6 +143,34 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &3520637551541775179
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5727963831297776388}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ce72a4191571954784ddceb3aa45927, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sideTorque: 0
+  frontTorque: 0
+--- !u!114 &6576225340642008767
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5727963831297776388}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21563f2af9b607341ab5106701d306de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wrapperObject: {fileID: 5727963831297776388}
+  shield: 50
 --- !u!1001 &1177275522520678696
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -450,17 +451,17 @@ PrefabInstance:
     - target: {fileID: 1614105555712647214, guid: 202155bcaef91744383b1d45c83f2a97,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 10000
+      value: 200000
       objectReference: {fileID: 0}
     - target: {fileID: 1614105555712647214, guid: 202155bcaef91744383b1d45c83f2a97,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 10000
+      value: 200000
       objectReference: {fileID: 0}
     - target: {fileID: 1614105555712647214, guid: 202155bcaef91744383b1d45c83f2a97,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 10000
+      value: 200000
       objectReference: {fileID: 0}
     - target: {fileID: 1614105555712647214, guid: 202155bcaef91744383b1d45c83f2a97,
         type: 3}
@@ -512,10 +513,20 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6922564825108583584, guid: 202155bcaef91744383b1d45c83f2a97,
+        type: 3}
+      propertyPath: m_Center.y
+      value: 0.0001
+      objectReference: {fileID: 0}
     - target: {fileID: 7179040148343971916, guid: 202155bcaef91744383b1d45c83f2a97,
         type: 3}
       propertyPath: m_Name
       value: HeatSignature
+      objectReference: {fileID: 0}
+    - target: {fileID: 7179040148343971916, guid: 202155bcaef91744383b1d45c83f2a97,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 7179040148343971916, guid: 202155bcaef91744383b1d45c83f2a97,
         type: 3}

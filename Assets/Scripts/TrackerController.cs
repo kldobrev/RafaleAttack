@@ -4,6 +4,7 @@ using System.Linq;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class TrackerController : MonoBehaviour
@@ -13,44 +14,59 @@ public class TrackerController : MonoBehaviour
     [SerializeField]
     private GameObject[] trackerArrows;
     [SerializeField]
-    private Transform trackerPointer;
+    private Transform targetTracker;
+    [SerializeField]
+    private GameObject missileLockedBar;
+    [SerializeField]
+    private GameObject missileLockedSign;
+    [SerializeField]
+    private GameObject exactPointer;
+    [SerializeField]
+    private RawImage trackerImage;
+    [SerializeField]
+    private TextMeshProUGUI trackerDistanceSign;
     [SerializeField]
     private Transform playerPoint;
     [SerializeField]
     private Transform crosshairUITransform;
     [SerializeField]
     private Transform crshPositionTransform;
+    [SerializeField]
+    private UnityEvent<Transform> sendMissileTarget;
 
-    private Vector2 trackerPointerPosition;
-    private GameObject trackerPointerObject;
-    private TextMeshProUGUI trackerDistance;
+    private Vector2 targetTrackerPosition;
+    private GameObject targetTrackerObject;
     private Vector3 objectViewPosition;
-    private Color32 enemyColour;
-    private Color32 allyColour;
     private Vector2 crosshairUIPosition;
     private float trackableDistanceMax;
+    private float trackedDistance;
     private int radarObjectsLayer;
+    private Color32 activeColour;
     private bool trackerActivated;
     private bool isTargetEnemy;
     private Transform targetPoint;
-    RaycastHit [] targetsHits;
-    Ray targetsRay;
+    private Image trackerMissileBarFill;
+    private float missileBarFillAmmount;
+    private bool missileLockingEnabled;
+    private RaycastHit [] targetsHits;
+    private Ray targetsRay;
+    private float missileBarFillStep;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        trackerPointerObject = trackerPointer.gameObject;
-        trackerDistance = trackerPointer.GetComponentInChildren<TextMeshProUGUI>();
-        trackerDistance.text = "999999";
-        enemyColour = new Color32(255, 66, 0, 255);
-        allyColour = new Color32(0, 255, 7, 255);
+        targetTrackerObject = targetTracker.gameObject;
+        trackerDistanceSign.text = "99999";
         trackableDistanceMax = Constants.CoveredDistance / 2;
         trackerActivated = false;
         isTargetEnemy = false;
         radarObjectsLayer = LayerMask.GetMask(Constants.RadarPointLayerName);
         targetsHits = new RaycastHit[2];
         crosshairUIPosition = Vector2.zero;
+        trackerMissileBarFill = missileLockedBar.GetComponentInChildren<Image>();
+        trackerMissileBarFill.fillAmount = 0;
+        missileBarFillAmmount = 0;
     }
 
     // Update is called once per frame
@@ -69,6 +85,7 @@ public class TrackerController : MonoBehaviour
             }
         }
     }
+
     private void UpdateCrosshairTransform()
     {
         crosshairUIPosition = mainCamera.WorldToScreenPoint(crshPositionTransform.position);
@@ -80,10 +97,7 @@ public class TrackerController : MonoBehaviour
     {
         if (obj.activeSelf != activate)
         {
-            if (activate)
-            {
-                obj.GetComponent<RawImage>().color = isTargetEnemy ? enemyColour : allyColour;
-            }
+            if (activate) obj.GetComponent<RawImage>().color = isTargetEnemy ? Constants.EnemyColour : Constants.AllyColour;
             obj.SetActive(activate);
         }
     }
@@ -95,6 +109,7 @@ public class TrackerController : MonoBehaviour
 
     private void DisplayPointOnTracker()
     {
+
         objectViewPosition = mainCamera.WorldToViewportPoint(targetPoint.position);
         if (objectViewPosition.y > 1)    // Object is to the top of the screen
         {
@@ -128,21 +143,72 @@ public class TrackerController : MonoBehaviour
             SetActiveAndColour(trackerArrows[3], false);
         }
 
-        if (objectViewPosition.y > -1 && objectViewPosition.y < 1 && objectViewPosition.x > -1 && objectViewPosition.x < 1)
+        if (objectViewPosition.y > 0 && objectViewPosition.y < 1 && objectViewPosition.x > 0 && objectViewPosition.x < 1)
         {
             if (objectViewPosition.z > 0)    // Object is in viewing range
             {
-                SetActiveAndColour(trackerPointerObject, true);
-                trackerPointerPosition = mainCamera.ViewportToScreenPoint(objectViewPosition);
-                trackerPointer.position = trackerPointerPosition;
-                trackerDistance.text = Mathf.Round(objectViewPosition.z).ToString();
+                if (objectViewPosition.z <= trackedDistance && trackerImage.color != activeColour)
+                {
+                    trackerImage.color = activeColour;
+                } 
+                else if (objectViewPosition.z > trackedDistance && trackerImage.color != Constants.OutOfRangeColour)
+                {
+                    trackerImage.color = Constants.OutOfRangeColour;
+                }
+
+                if(!targetTrackerObject.activeSelf)
+                {
+                    trackerDistanceSign.color = activeColour;
+                    targetTrackerObject.SetActive(true);
+                }
+                else
+                {
+                    targetTrackerPosition = mainCamera.ViewportToScreenPoint(objectViewPosition);
+                    targetTracker.position = targetTrackerPosition;
+                    trackerDistanceSign.text = Mathf.Round(objectViewPosition.z).ToString();
+                    if (missileLockingEnabled && objectViewPosition.z <= trackedDistance) UpdateMissileLockBar();
+                }
             }
+        }
+        else if(targetTrackerObject.activeSelf)
+        {
+            SetActiveAndColour(targetTrackerObject, false);
+            missileLockedBar.SetActive(false);
+            missileBarFillAmmount = 0;
+            sendMissileTarget.Invoke(null);
+        }
+
+    }
+
+    private void UpdateMissileLockBar()
+    {
+        if (objectViewPosition.y > Constants.MissileBarUpdBoundLow && objectViewPosition.y < Constants.MissileBarUpdBoundHigh && 
+            objectViewPosition.x > Constants.MissileBarUpdBoundLow && objectViewPosition.x < Constants.MissileBarUpdBoundHigh)
+        {
+            if (missileBarFillAmmount == 1 && !missileLockedSign.activeSelf)
+            {
+                sendMissileTarget.Invoke(targetPoint);
+                missileLockedBar.SetActive(false);
+                missileLockedSign.SetActive(true);
+            } 
+            else if(missileBarFillAmmount == 0)
+            {
+                missileLockedBar.SetActive(true);
+            }
+            missileBarFillAmmount = Mathf.Clamp01(missileBarFillAmmount + missileBarFillStep);
         }
         else
         {
-            SetActiveAndColour(trackerPointerObject, false);
+            if (missileBarFillAmmount == 0 && missileLockedBar.activeSelf)  missileLockedBar.SetActive(false);
+            else if (missileBarFillAmmount == 1)
+            {
+                sendMissileTarget.Invoke(null);
+                missileLockedSign.SetActive(false);
+                missileLockedBar.SetActive(true);
+            }
+            missileBarFillAmmount = Mathf.Clamp01(missileBarFillAmmount - missileBarFillStep);
         }
-
+        trackerMissileBarFill.fillAmount = missileBarFillAmmount;
     }
 
     public void TrackTarget()
@@ -159,6 +225,7 @@ public class TrackerController : MonoBehaviour
                     targetPoint = targetsHits[i].collider.transform;
                     trackerActivated = true;
                     isTargetEnemy = targetPoint.CompareTag(Constants.EnemyPointTagName);
+                    activeColour = isTargetEnemy ? Constants.EnemyColour: Constants.AllyColour;
                     break;
                 }
             }
@@ -171,8 +238,29 @@ public class TrackerController : MonoBehaviour
         {
             arrow.SetActive(false);
         }
-        trackerPointerObject.SetActive(false);
+        if(missileLockedSign.activeSelf) missileLockedSign.SetActive(false);
+        targetTrackerObject.SetActive(false);
         trackerActivated = false;
+        missileBarFillAmmount = 0;
+    }
+
+    public void SyncWithWeapon(bool isMissile, float dist, float lockStep)
+    {
+        missileLockingEnabled = isMissile;
+        trackedDistance = dist;
+        missileBarFillAmmount = 0;
+        missileBarFillStep = lockStep;
+        if(!isMissile)
+        {
+            if (missileLockedSign.activeSelf)
+            {
+                missileLockedSign.SetActive(false);
+            }
+            else if (missileLockedBar.activeSelf)
+            {
+                missileLockedBar.SetActive(false);
+            }
+        }
     }
 
 }

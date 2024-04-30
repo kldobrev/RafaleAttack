@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,13 +20,8 @@ public class PlayerCannonController : CannonController
             frameCounter++;
             if (frameCounter == rateOfFireFrames)
             {
-                if (Physics.Raycast(originPoint.position, directionPoint.TransformDirection(Vector3.forward), out enemy, cannonRange, enemyLayer))
-                {
-                    enemy.collider.GetComponent<Damageable>().TakeDamage(damage);
-                }
-                frameCounter = 0;
-                ammoLeft--;
-                PlayerController.uiAmmoTracker.UpdateWeaponAmmoInUI(Ammunition);
+                ShootCannon(Constants.EnemiesTagName);
+                PlayerController.UIAmmoTracker.UpdateWeaponAmmoInUI(Ammunition);
             }
         }
     }
@@ -33,6 +29,6 @@ public class PlayerCannonController : CannonController
     public override void SetWeapon(WeaponData weapon)
     {
         base.SetWeapon(weapon);
-        PlayerController.uiAmmoTracker.AddWeaponIcon(weapon.iconPath);
+        PlayerController.UIAmmoTracker.AddWeaponIcon(weapon.iconPath);
     }
 }

@@ -10,6 +10,8 @@ public class PlayerController : MonoBehaviour, PlayerControls.IGameplayActions
 {
     private PlayerControls controls;
     [SerializeField]
+    private Transform bodyTransform;
+    [SerializeField]
     private Rigidbody rafaleBody;
     [SerializeField]
     private Transform cannonTransform;
@@ -31,7 +33,7 @@ public class PlayerController : MonoBehaviour, PlayerControls.IGameplayActions
     private float rollFactor;
     [SerializeField]
     private WeaponContainer[] weapons;
-    public static AmmunitionUITracker uiAmmoTracker;
+    public static AmmunitionUITracker UIAmmoTracker;
 
     [SerializeField]
     private UnityEvent<int> setSpeedometerSpeed;
@@ -45,7 +47,8 @@ public class PlayerController : MonoBehaviour, PlayerControls.IGameplayActions
     private UnityEvent trackTarget;
     [SerializeField]
     private UnityEvent stopTrackingTarget;
-
+    [SerializeField]
+    private UnityEvent<bool, float, float> sendWeaponDataToTracker;
 
 
     private float accelerateValue;
@@ -64,7 +67,7 @@ public class PlayerController : MonoBehaviour, PlayerControls.IGameplayActions
     private int sendCoordsFrameCount;
     private int sendSpeedFrameCount;
     private int selectedWeaponIdx;
-    public static float currentWeaponRange;
+    public static Transform PlayerBodyTransform;
 
 
     private void Awake()
@@ -100,11 +103,12 @@ public class PlayerController : MonoBehaviour, PlayerControls.IGameplayActions
         sendHeightFrameCount = sendCoordsFrameCount = sendSpeedFrameCount = 0;
         planeDrag = Constants.PlDefaultDrag;
         selectedWeaponIdx = 0;
-        uiAmmoTracker = transform.GetComponent<AmmunitionUITracker>();
+        UIAmmoTracker = transform.GetComponent<AmmunitionUITracker>();
         weapons[0].SetWeapon(Constants.HeatseekerMissile);   // Will be set by player
         weapons[1].SetWeapon(Constants.BulletCannon);   // Will be set by player
-        uiAmmoTracker.UpdateWeaponAmmoInUI(weapons[selectedWeaponIdx].Ammunition);
-        currentWeaponRange = weapons[selectedWeaponIdx].Range;
+        UIAmmoTracker.UpdateWeaponAmmoInUI(weapons[selectedWeaponIdx].Ammunition);
+        sendWeaponDataToTracker.Invoke(true, weapons[selectedWeaponIdx].Range, weapons[selectedWeaponIdx].LockingStep);
+        PlayerBodyTransform = bodyTransform;
     }
 
     // Update is called once per frame
@@ -188,14 +192,20 @@ public class PlayerController : MonoBehaviour, PlayerControls.IGameplayActions
 
         if (torqueInput != Vector2.zero && rafaleBody.velocity.magnitude > 1)
         {
-            planeDrag = Constants.PlTurnDrag;
+            if (throttleInput == 0)
+            {
+                planeDrag = Constants.PlTurnDrag;
+            }
             rafaleBody.AddRelativeTorque(torqueInput.y * pitchFactor * Vector3.right, ForceMode.Acceleration);
             rafaleBody.AddRelativeTorque(torqueInput.x * yawFactor * Vector3.up, ForceMode.Acceleration);
         }
 
         if (isAirbourne && rollInput != 0f)
         {
-            planeDrag = Constants.PlTurnDrag;
+            if (throttleInput == 0)
+            {
+                planeDrag = Constants.PlTurnDrag;
+            }
             rafaleBody.AddRelativeTorque(rollInput * rollFactor * Vector3.forward, ForceMode.Acceleration);
         }
         rafaleBody.drag = planeDrag;
@@ -290,8 +300,9 @@ public class PlayerController : MonoBehaviour, PlayerControls.IGameplayActions
     public void OnSwitchweapon(InputAction.CallbackContext context)
     {
         selectedWeaponIdx = selectedWeaponIdx == Constants.MaxNumWeapons - 1 ? 0 : selectedWeaponIdx + 1;
-        uiAmmoTracker.SwitchSelectedWeaponInUI(selectedWeaponIdx, weapons[selectedWeaponIdx]);
-        uiAmmoTracker.UpdateWeaponAmmoInUI(weapons[selectedWeaponIdx].Ammunition);
+        UIAmmoTracker.SwitchSelectedWeaponInUI(selectedWeaponIdx, weapons[selectedWeaponIdx]);
+        UIAmmoTracker.UpdateWeaponAmmoInUI(weapons[selectedWeaponIdx].Ammunition);
+        sendWeaponDataToTracker.Invoke(selectedWeaponIdx == 0, weapons[selectedWeaponIdx].Range, weapons[selectedWeaponIdx].LockingStep);
     }
 
     public void OnToggleautospeed(InputAction.CallbackContext context)

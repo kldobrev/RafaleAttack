@@ -40,12 +40,12 @@ public class UIController : MonoBehaviour
         speedometer.text = Constants.DefaultSpeedValueUI;
         autoSpeedIndicator.text = Constants.DefaultAutoSpeedValueUI;
         speedDisplayed = 0;
-        autoSpeedIndicator.color = Constants.autoSpeedColorOff;
+        autoSpeedIndicator.color = Constants.AutoSpeedColourOff;
         heightMeter.value = 0f;
         heightMeter.minValue = Constants.HeightMeterValueMinUI;
         heightMeter.maxValue = Constants.HeightMeterValueMaxUI;
         heightMeterBkg = heightMeter.GetComponentInChildren<Image>();
-        heightMeterBkg.color = Constants.heightBelowAlertColor;
+        heightMeterBkg.color = Constants.HeightBelowAlertColour;
         currentWeaponIconIdx = 0;
     }
 
@@ -63,11 +63,11 @@ public class UIController : MonoBehaviour
         if(isTurnedOn)
         {
             autoSpeedIndicator.text = "Auto speed: " + newAutoSpeed.ToString().PadLeft(4, '0') + " km/h";
-            autoSpeedIndicator.color = Constants.autoSpeedColorOn;
+            autoSpeedIndicator.color = Constants.AutoSpeedColourOn;
         }
         else
         {
-            autoSpeedIndicator.color = Constants.autoSpeedColorOff;
+            autoSpeedIndicator.color = Constants.AutoSpeedColourOff;
         }
     }
 
@@ -77,15 +77,15 @@ public class UIController : MonoBehaviour
         {
             heightMeter.maxValue = Constants.HeightMeterValueAlertUI;
             heightMeter.minValue = 0f;
-            heightMeterBkg.color = Constants.heightBelowAlertColor;
-            heightNumeric.color = Constants.heightBelowAlertColor;
+            heightMeterBkg.color = Constants.HeightBelowAlertColour;
+            heightNumeric.color = Constants.HeightBelowAlertColour;
         }
         else if (height > Constants.HeightMeterValueAlertUI && heightMeter.maxValue != Constants.HeightMeterValueMaxUI)
         {
             heightMeter.maxValue = Constants.HeightMeterValueMaxUI;
             heightMeter.minValue = Constants.HeightMeterValueAlertUI;
-            heightMeterBkg.color = Constants.heightAboveAlertColor;
-            heightNumeric.color = Constants.heightAboveAlertColor;
+            heightMeterBkg.color = Constants.HeightAboveAlertColour;
+            heightNumeric.color = Constants.HeightAboveAlertColour;
         }
         heightMeter.value = height;
         heightNumeric.text = ((int) Mathf.Clamp(height, 0f, Constants.HeightMeterValueMaxUI)).ToString().PadLeft(5, '0') + " m";
@@ -104,7 +104,7 @@ public class UIController : MonoBehaviour
         ammoLeftDisplay.text =  ammo.ToString();
         if(ammo == 0)
         {
-            weaponIcons[currentWeaponIconIdx].GetComponent<RawImage>().color = Constants.weaponEmptyIconColor;
+            weaponIcons[currentWeaponIconIdx].GetComponent<RawImage>().color = Constants.WeaponEmptyIconColour;
         }
     }
 

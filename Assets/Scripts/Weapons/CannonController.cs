@@ -12,8 +12,6 @@ public class CannonController : WeaponContainer
     protected Transform cannonEffectPoint;
     [SerializeField]
     protected int rateOfFireFrames = 3;
-    [SerializeField]
-    protected UnityEvent<int> giveDamage;
 
     protected ParticleSystem cannonFireEffect;
     protected int damage;
@@ -21,8 +19,11 @@ public class CannonController : WeaponContainer
     protected bool isFiring;
     protected float cannonRange;
     protected int enemyLayer;
+    protected RaycastHit[] hits;
     protected RaycastHit enemy;
+    protected int hitsDetected;
     public override float Range => cannonRange;
+    public override float LockingStep => 0;
 
 
     // Start is called before the first frame update
@@ -31,6 +32,7 @@ public class CannonController : WeaponContainer
         frameCounter = 0;
         isFiring = false;
         enemyLayer = LayerMask.GetMask(Constants.PlayerLayerName);
+        hits = new RaycastHit[6];
     }
 
     // Update is called once per frame
@@ -41,12 +43,24 @@ public class CannonController : WeaponContainer
             frameCounter++;
             if (frameCounter == rateOfFireFrames)
             {
-                if(Physics.Raycast(originPoint.position, directionPoint.TransformDirection(Vector3.forward), out enemy, cannonRange, enemyLayer))
+                ShootCannon(Constants.PlayerTagName);
+            }
+        }
+    }
+    protected void ShootCannon(string targetTag)
+    {
+        hitsDetected = Physics.RaycastNonAlloc(originPoint.position, directionPoint.TransformDirection(Vector3.forward),
+                    hits, cannonRange, enemyLayer);
+        frameCounter = 0;
+        ammoLeft--;
+        if (hitsDetected != 0)
+        {
+            for (int i = 0; i != hitsDetected; i++)
+            {
+                if (hits[i].collider != null && hits[i].collider.CompareTag(targetTag))
                 {
-                    enemy.collider.GetComponent<Damageable>().TakeDamage(damage);
+                    hits[i].collider.GetComponent<Damageable>().TakeDamage(damage);
                 }
-                frameCounter = 0;
-                ammoLeft--;
             }
         }
     }

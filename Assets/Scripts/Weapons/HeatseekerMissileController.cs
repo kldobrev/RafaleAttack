@@ -1,10 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class HeatseekerMissileController : MissileController
 {
-    private Transform aimTransform;
 
     // Start is called before the first frame update
     private void Start()
@@ -12,32 +13,37 @@ public class HeatseekerMissileController : MissileController
         StartCoroutine(ActiveCountdown(Constants.HeatseekerMissile.activeTime));
     }
 
-    // Update is called once per frame
-    protected override void Update()
-    {
-        //missileBody.transform.LookAt(target);
-    }
-
-    private void FixedUpdate()
-    {
-        missileBody.AddRelativeForce(Constants.MissileSpeed * Vector3.forward, ForceMode.Acceleration);
-    }
-
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag(Constants.HeatSignatureTag))
+        Transform colliderTransform = other.transform;
+        if (colliderTransform.CompareTag(Constants.HeatSignatureTag))   // Detected heat signature of foreign aircraft
         {
-            Debug.Log("Detected " + other.transform.parent.name);
-            target = other.transform;
+            tgtHeatSignTransform = colliderTransform;
+            if (colliderTransform.parent.CompareTag(Constants.PlayerTagName))
+            {
+                target = PlayerController.PlayerBodyTransform;
+            }
+            else
+            {
+                target = colliderTransform.parent;
+            }
+            UnassignTargetIfNotVisible();
+        }
+        else if (GameObject.ReferenceEquals(colliderTransform, target)) // Hit aircraft body
+        {
+            Debug.Log("Hit " + colliderTransform.name);
+            //colliderTransform.GetComponent<Damageable>().TakeDamage(Constants.HeatseekerMissile.damageAmount);
+            Destroy(gameObject);
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.CompareTag(Constants.HeatSignatureTag))
+        if (GameObject.ReferenceEquals(other.transform, tgtHeatSignTransform))
         {
-            Debug.Log("Leaving " + other.transform.parent.name);
+            Debug.Log("Leaving " + other.transform.name);
             target = null;
+            tgtHeatSignTransform = null;
         }
     }
 
