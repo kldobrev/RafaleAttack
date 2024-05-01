@@ -6162,6 +6162,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: RadarPointPlayer
       objectReference: {fileID: 0}
+    - target: {fileID: 1371142837105555439, guid: 20513b21cc7681a48a55d750d556d156,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8121585141398818307, guid: 20513b21cc7681a48a55d750d556d156,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -6573,7 +6578,7 @@ PrefabInstance:
     - target: {fileID: 3182071989870052046, guid: 05868fab2d415b84abdc41e4d376b804,
         type: 3}
       propertyPath: m_CenterOfMass.z
-      value: 0
+      value: -3
       objectReference: {fileID: 0}
     - target: {fileID: 3182071989870052046, guid: 05868fab2d415b84abdc41e4d376b804,
         type: 3}
@@ -6639,37 +6644,37 @@ PrefabInstance:
     - target: {fileID: 4155046195482119553, guid: 05868fab2d415b84abdc41e4d376b804,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 619.2305
+      value: 619.23004
       objectReference: {fileID: 0}
     - target: {fileID: 4155046195482119553, guid: 05868fab2d415b84abdc41e4d376b804,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 12.042463
+      value: 12.0523
       objectReference: {fileID: 0}
     - target: {fileID: 4155046195482119553, guid: 05868fab2d415b84abdc41e4d376b804,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2066.296
+      value: 2066.2903
       objectReference: {fileID: 0}
     - target: {fileID: 4155046195482119553, guid: 05868fab2d415b84abdc41e4d376b804,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9999694
+      value: 0.9999691
       objectReference: {fileID: 0}
     - target: {fileID: 4155046195482119553, guid: 05868fab2d415b84abdc41e4d376b804,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0.0008059189
       objectReference: {fileID: 0}
     - target: {fileID: 4155046195482119553, guid: 05868fab2d415b84abdc41e4d376b804,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.007818973
+      value: 0.007814751
       objectReference: {fileID: 0}
     - target: {fileID: 4155046195482119553, guid: 05868fab2d415b84abdc41e4d376b804,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: 0.0000063163743
       objectReference: {fileID: 0}
     - target: {fileID: 4155046195482119553, guid: 05868fab2d415b84abdc41e4d376b804,
         type: 3}
@@ -14739,9 +14744,7 @@ MonoBehaviour:
   originPoint: {fileID: 2078725543}
   directionPoint: {fileID: 933414765}
   playerBodyTransform: {fileID: 2098382675}
-  spawnPositions:
-  - {x: -6.5, y: -2, z: -7}
-  - {x: 6.5, y: -2, z: -7}
+  spawnPositions: []
   missileTypePrefab: {fileID: 7454395505990336059, guid: 87c28a1056aca414d9cedc8a1a427586,
     type: 3}
   launchPoints:
@@ -15200,6 +15203,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Cannon
+      objectReference: {fileID: 0}
+    - target: {fileID: 8033970962414961582, guid: 85f511c4069f3b14792fd6ea4b93d7fd,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8961858744779393918, guid: 85f511c4069f3b14792fd6ea4b93d7fd,
         type: 3}
